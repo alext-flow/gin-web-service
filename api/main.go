@@ -2,11 +2,16 @@ package main
 
 import (
 	"api/server"
+	"log"
 )
 
 func main() {
 	app := server.App{}
-	app.Initialize()
+	err := app.Initialize()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	app.ConfigureRoutes()
 	app.Serve()
 }

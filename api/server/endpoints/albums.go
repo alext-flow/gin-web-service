@@ -7,22 +7,31 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"api/server/db"
 )
 
 func CreateAlbum(c *gin.Context) {
-    var newAlbum models.Album
+	var newAlbum models.Album
 
-    // bind the received JSON to newAlbum
+	// bind the received JSON to newAlbum
 	if err := c.ShouldBindJSON(&newAlbum); err != nil {
-        // if error, abort the request with status code 400 and the error message
-        c.AbortWithError(http.StatusBadRequest, err)
-        return
-    }
+		// if error, abort the request with status code 400 and the error message
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
 	newAlbum.ID = uuid.New().String()
 
-    // add the new album to the slice
-    mocks.Albums = append(mocks.Albums, newAlbum)
-    c.JSON(http.StatusCreated, newAlbum)
+	// insert the new album into the database
+	insertAlbumQuery := `INSERT INTO Album (id, title, artist, price) VALUES (?, ?, ?, ?)`
+	_, err := db.DbConn.Exec(insertAlbumQuery, newAlbum.ID, newAlbum.Title, newAlbum.Artist, newAlbum.Price)
+	if err != nil {
+		// if error, abort the request with status code 500 and the error message
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, newAlbum)
 }
 
 func GetAlbums(c *gin.Context) {
@@ -72,29 +81,29 @@ func DeleteAlbumById(c *gin.Context){
 	c.JSON(http.StatusNotFound, gin.H{"error" : "album not found"})
 }
 
-func GetAlbumsByType(c *gin.Context) {
-    typeName := c.Param("type")
+// func GetAlbumsByType(c *gin.Context) {
+//     typeName := c.Param("type")
 	
-	// create a new slice to store albums of the specified type
-	var albumsOfType []models.Album
+// 	// create a new slice to store albums of the specified type
+// 	var albumsOfType []models.Album
 
-    // iterate over the list of albums
-	for _, a := range mocks.Albums {
-		// If the album type matches the specified type, add it to the slice
-        if a.Type.Name == typeName {
-			albumsOfType = append(albumsOfType, a)
-        }
-    }
+//     // iterate over the list of albums
+// 	for _, a := range mocks.Albums {
+// 		// If the album type matches the specified type, add it to the slice
+//         if a.Type.Name == typeName {
+// 			albumsOfType = append(albumsOfType, a)
+//         }
+//     }
 	
-	// if no albums of the specified type were found, return a 404 error
-	if len(albumsOfType) == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "No albums found of specified type"})
-		return
-	}
+// 	// if no albums of the specified type were found, return a 404 error
+// 	if len(albumsOfType) == 0 {
+// 		c.JSON(http.StatusNotFound, gin.H{"error": "No albums found of specified type"})
+// 		return
+// 	}
 
-	// otherwise, return the albums of the specified type
-	c.JSON(http.StatusOK, albumsOfType)
-}
+// 	// otherwise, return the albums of the specified type
+// 	c.JSON(http.StatusOK, albumsOfType)
+// }
 
 func UpdateAlbum(c *gin.Context) {
     inputId := c.Param("id")
