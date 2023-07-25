@@ -1,23 +1,24 @@
 package mocks
 
-import (
-	"common/models"
-)
+// import (
+// 	"common/models"
+// )
 
-var AlbumTypes map[string]models.AlbumType = map[string]models.AlbumType{
-	"vinyl": {
-		ID:     "vinyl-1",
-		Name:  "vinyl",
-		Desc:  "oldest and round",
-	},
-	"cd": {
-		ID:     "cd-1",
-		Name:  "cd",
-		Desc:  "old, round and relatively small",
-	},
-	"minidisc": {
-		ID:     "minidisc-1",
-		Name:  "minidisc",
-		Desc:  "round, small and the biggest flop of all",
-	},
-}
+// var typeID := uuid.Parse(uuid.New().String())
+// var AlbumTypes map[string]models.AlbumType = map[string]models.AlbumType{
+// 	"vinyl": {
+// 		ID:     typeID,
+// 		Name:  "vinyl",
+// 		Desc:  "oldest and round",
+// 	},
+// 	"cd": {
+// 		ID:     typeID,
+// 		Name:  "cd",
+// 		Desc:  "old, round and relatively small",
+// 	},
+// 	"minidisc": {
+// 		ID:    typeID,
+// 		Name:  "minidisc",
+// 		Desc:  "round, small and the biggest flop of all",
+// 	},
+// }

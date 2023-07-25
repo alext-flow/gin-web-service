@@ -23,7 +23,7 @@ func (app *App) Initialize() error{
 }
 
 func (app *App) ConfigureRoutes() {
-	app.router.GET("/type/:type", endpoints.GetAlbumType)
+	// app.router.GET("/type/:type", endpoints.GetAlbumType)
 	app.router.GET("/albums", endpoints.GetAlbums)
 	app.router.POST("/albums", endpoints.CreateAlbum)
 	app.router.GET("/albums/:id", endpoints.GetAlbumByID)

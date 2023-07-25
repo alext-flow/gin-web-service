@@ -1,11 +1,16 @@
 package models
 
+import (
+	"github.com/google/uuid"
+)
+
 type Album struct {
-	ID     string    `json:"id"`
-	Title  string    `json:"title"`
-	Artist string    `json:"artist"`
-	Price  float64   `json:"price"`
-	// Type   AlbumType `json:"type"`
+	ID     string    	`gorm:"type:char(36);primaryKey" json:"id"`
+	Title  string    	`json:"title"`
+	Artist string    	`json:"artist"`
+	Price  float64   	`json:"price"`
+	AlbumType AlbumType `gorm:"foreignKey:TypeID" json:"type"`
+	TypeID uuid.UUID 	`gorm:"type:char(36)" json:"-"`
 }
 
 type AlbumUpdate struct {

@@ -1,10 +1,11 @@
 package db
 
 import (
-    "database/sql"
     "fmt"
     _ "github.com/go-sql-driver/mysql" // this is needed to use mysql
-
+    "gorm.io/gorm"
+    "gorm.io/driver/mysql"
+    "common/models"
 )
 
 const (
@@ -15,33 +16,40 @@ const (
 	DbName     = "albumsDB"
 )
 
-var DbConn *sql.DB
+var DbConn *gorm.DB
 
 func SetupDatabaseConn() error {
-	var err error
+    // ?charset=utf8mb4 is for support for storing any unicode character
+    // parseTime = true is to convert MySQL date and datetime types to Go's time.Time type
+    // loc=Local sets the timezone to the one the server is run in
+    connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8mb4&parseTime=True&loc=Local", DbUser, DbPassword, DbHost, DbPort)
+    err := initiateConnection(connectionString)
+    if err != nil {
+        return err
+    }
 
-	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DbUser, DbPassword, DbHost, DbPort, DbName)
-	DbConn, err = sql.Open("mysql", dataSourceName)
-	if err != nil {
-		return err
-	}
+    err = DbConn.Exec("CREATE DATABASE IF NOT EXISTS " + DbName).Error
+    if err != nil {
+        return err
+    }
 
-	err = DbConn.Ping()
-	if err != nil {
-		return err
-	}
+    sqlDB, err := DbConn.DB()
+    if err != nil {
+        return err
+    }
+    defer sqlDB.Close()  // close connection when SetupDatabaseConn ends
 
-	createAlbumsTableQuery := `CREATE TABLE IF NOT EXISTS Album (
-		id VARCHAR(255) PRIMARY KEY,
-		title VARCHAR(255) NOT NULL,
-		artist VARCHAR(255) NOT NULL,
-		price DOUBLE NOT NULL
-	);`
+    connectionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", DbUser, DbPassword, DbHost, DbPort, DbName)
+    err = initiateConnection(connectionString)
+    if err != nil {
+        return err
+    }
 
-	_, err = DbConn.Exec(createAlbumsTableQuery)
-	if err != nil {
-		return err
-	}
+    return DbConn.AutoMigrate(&models.Album{}, &models.AlbumType{})
+}
 
-	return nil
+func initiateConnection(connString string) error {
+    var err error
+    DbConn, err = gorm.Open(mysql.Open(connString), &gorm.Config{})
+    return err
 }
