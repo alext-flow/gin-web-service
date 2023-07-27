@@ -1,23 +1,26 @@
 package server
 
 import (
+	//"api/server/db"
 	"api/server/endpoints"
-	"api/server/db"
+	//"common/db"
+
 	"github.com/gin-gonic/gin"
 )
 
 type App struct {
 	router *gin.Engine
+	// inject the repos
 }
 
 func (app *App) Initialize() error{
 	app.router = gin.Default()
 
 	//db connection
-	err := db.SetupDatabaseConn()
-	if err != nil {
-		return err
-	}
+	
+	// if err != nil {
+	// 	return err
+	// }
 	
 	return nil
 }

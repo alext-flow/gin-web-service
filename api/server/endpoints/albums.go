@@ -53,7 +53,7 @@ func CreateAlbum(c *gin.Context) {
     newAlbum.AlbumType = albumType
     newAlbum.TypeID = albumType.ID
 
-    // Check if the combination of albums.title and album_types.id exists, if so, return the object
+    // check if the combination of albums.title and album_types.id exists, if so, return the object
     if err := tx.Where("title = ? AND type_id = ?", newAlbum.Title, albumType.ID).First(&album).Error; err != nil {
         if errors.Is(err, gorm.ErrRecordNotFound) {
             // create the Album
