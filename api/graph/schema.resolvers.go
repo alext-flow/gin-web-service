@@ -36,7 +36,24 @@ func (r *mutationResolver) CreateAlbum(ctx context.Context, title string, artist
 
 // UpdateAlbum is the resolver for the updateAlbum field.
 func (r *mutationResolver) UpdateAlbum(ctx context.Context, id string, title *string, artist *string, price *float64) (*models.Album, error) {
-	panic(fmt.Errorf("not implemented: UpdateAlbum - updateAlbum"))
+	var updateAlbumInput models.AlbumUpdate
+	updateAlbumInput.ID = id
+	if title != nil {
+		updateAlbumInput.Title = *title
+	}
+	if artist != nil {
+		updateAlbumInput.Artist = *artist
+	}
+	if price != nil {
+		updateAlbumInput.Price = *price
+	}
+
+	album, err := r.AlbumRepo.UpdateAlbum(updateAlbumInput)
+	if err != nil {
+		return nil, err
+	}
+
+	return album, nil
 }
 
 // DeleteAlbum is the resolver for the deleteAlbum field.
@@ -61,13 +78,13 @@ func (r *queryResolver) Albums(ctx context.Context) ([]*models.Album, error) {
 // Album is the resolver for the album field.
 func (r *queryResolver) Album(ctx context.Context, id string) (*models.Album, error) {
 	album, err := r.AlbumRepo.Album(id)
-    if err != nil {
-        return nil, err
-    }
-    if album == nil {
-        return nil, fmt.Errorf("No album found with id: %s", id)
-    }
-    return album, nil
+	if err != nil {
+		return nil, err
+	}
+	if album == nil {
+		return nil, fmt.Errorf("No album found with id: %s", id)
+	}
+	return album, nil
 }
 
 // Album returns AlbumResolver implementation.

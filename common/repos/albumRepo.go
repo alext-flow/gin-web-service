@@ -106,3 +106,32 @@ func (ar *AlbumRepo) DeleteAlbum(id string) (bool, error){
 
 	return true, nil
 }
+
+func (ar *AlbumRepo) UpdateAlbum(albumUpdate models.AlbumUpdate) (*models.Album, error) {
+	var album models.Album
+
+	if err := ar.DbConn.First(&album, "id = ?", albumUpdate.ID).Error; 
+		err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return nil, nil
+			}
+		return nil, err
+	}
+	if albumUpdate.Title != "" {
+		album.Title = albumUpdate.Title
+	}
+
+	if albumUpdate.Artist != "" {
+		album.Artist = albumUpdate.Artist
+	}
+
+	if albumUpdate.Price != 0 {
+		album.Price = albumUpdate.Price
+	}
+
+	if err := ar.DbConn.Save(&album).Error; err != nil {
+		return nil, err
+	}
+
+	return &album, nil
+}

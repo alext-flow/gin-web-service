@@ -14,7 +14,8 @@ type Album struct {
 }
 
 type AlbumUpdate struct {
-	Title  string  `json:"title"`
-	Artist string  `json:"artist"`
-	Price  float64 `json:"price"`
+	ID     string   `json:"id,omitempty"`
+	Title  string   `json:"title,omitempty"`
+	Artist string   `json:"artist,omitempty"`
+	Price  float64  `json:"price,omitempty"`
 }

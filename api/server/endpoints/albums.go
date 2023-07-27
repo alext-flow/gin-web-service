@@ -81,8 +81,6 @@ func CreateAlbum(c *gin.Context) {
     }
 }
 
-
-
 func GetAlbums(c *gin.Context) {
 	var albums []models.Album
 	// get all albums from the database using GORM
@@ -107,7 +105,6 @@ func GetAlbumByID(c *gin.Context) {
 
     c.JSON(http.StatusOK, album)
 }
-
 
 func DeleteAlbumById(c *gin.Context) {
 	var album models.Album
