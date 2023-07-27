@@ -87,3 +87,22 @@ func (ar *AlbumRepo) Album(id string) (*models.Album, error){
     }
     return &album, nil
 }
+
+func (ar *AlbumRepo) DeleteAlbum(id string) (bool, error){
+	var album models.Album
+	// check if the album exists
+	if err := ar.DbConn.First(&album, "id = ?", id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+            return false, nil
+        }
+		return false, err
+	}
+
+	// if the album exists terminate it
+	result := ar.DbConn.Delete(&album)
+	if result.Error != nil {
+		return false, result.Error
+	}
+
+	return true, nil
+}

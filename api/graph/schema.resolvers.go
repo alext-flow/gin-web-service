@@ -41,7 +41,12 @@ func (r *mutationResolver) UpdateAlbum(ctx context.Context, id string, title *st
 
 // DeleteAlbum is the resolver for the deleteAlbum field.
 func (r *mutationResolver) DeleteAlbum(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteAlbum - deleteAlbum"))
+	boolResult, err := r.AlbumRepo.DeleteAlbum(id)
+	if err != nil {
+		return false, err
+	}
+	fmt.Println("deleted?:", boolResult)
+	return boolResult, nil
 }
 
 // Albums is the resolver for the albums field.
@@ -63,7 +68,6 @@ func (r *queryResolver) Album(ctx context.Context, id string) (*models.Album, er
         return nil, fmt.Errorf("No album found with id: %s", id)
     }
     return album, nil
-	//panic(fmt.Errorf("not implemented: Album - album"))
 }
 
 // Album returns AlbumResolver implementation.
