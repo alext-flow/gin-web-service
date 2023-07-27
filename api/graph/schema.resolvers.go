@@ -8,6 +8,7 @@ import (
 	"common/models"
 	"context"
 	"fmt"
+	// "common/utils"
 )
 
 // TypeID is the resolver for the typeID field.
@@ -17,6 +18,7 @@ func (r *albumResolver) TypeID(ctx context.Context, obj *models.Album) (string, 
 
 // ID is the resolver for the id field.
 func (r *albumTypeResolver) ID(ctx context.Context, obj *models.AlbumType) (string, error) {
+
 	return obj.ID.String(), nil
 }
 
